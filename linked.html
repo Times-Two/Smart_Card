@@ -7,118 +7,94 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f1f8e9;
+      background: #ede7f6;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       text-align: center;
     }
-    .container {
-      max-width: 700px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
+    .card {
+      background: #fff;
       border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin: 0 auto;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     h2 {
-      color: #33691e;
+      color: #4527a0;
     }
-    .user-info {
-      margin-bottom: 20px;
-      font-size: 18px;
-      color: #444;
-    }
-    .icons {
+    .social-icons {
+      margin-top: 20px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      margin-top: 30px;
     }
-    .icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      overflow: hidden;
-      cursor: pointer;
-      border: 2px solid #ccc;
-      transition: 0.3s;
-    }
-    .icon:hover {
-      border-color: #33691e;
-      transform: scale(1.1);
-    }
-    .icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    button {
-      margin-top: 40px;
-      padding: 12px 25px;
-      background: #33691e;
+    .social-icons a {
+      text-decoration: none;
       color: white;
-      border: none;
+      background: #4527a0;
+      padding: 12px 18px;
       border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
+      font-size: 14px;
     }
-    button:hover {
-      background: #1b5e20;
+    .social-icons a:hover {
+      background: #311b92;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Linked Social Accounts</h2>
-    <div class="user-info" id="userInfo"></div>
 
-    <div class="icons" id="socialIcons"></div>
-
-    <button onclick="generateQRCode()">Show QR Code</button>
+  <div class="card">
+    <h2 id="userTitle">Linked Accounts</h2>
+    <div class="social-icons" id="linksContainer">
+      <!-- Social media links will be inserted here -->
+    </div>
   </div>
 
   <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    const accounts = JSON.parse(localStorage.getItem("accounts"));
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
 
-    if (!user || !accounts) {
+    const email = getQueryParam("email");
+    if (!email) {
+      alert("No email provided.");
       window.location.href = "index.html";
     }
 
-    document.getElementById("userInfo").innerText = `Welcome, ${user.name} (${user.email})`;
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const currentUser = users.find(u => u.email === email);
 
-    const icons = {
-        youtube: "https://img.icons8.com/color/96/youtube.png",
-      facebook: "https://img.icons8.com/color/96/facebook.png",
-      instagram: "https://img.icons8.com/color/96/instagram-new.png",
-      twitter: "https://img.icons8.com/color/96/twitterx--v1.png",
-      tiktok: "https://img.icons8.com/color/96/tiktok--v1.png",
-      linkedin: "https://img.icons8.com/color/96/linkedin.png",
-      whatsapp: "https://img.icons8.com/color/96/whatsapp--v1.png"
-    };
+    if (!currentUser) {
+      alert("User not found.");
+      window.location.href = "index.html";
+    }
 
-    const iconContainer = document.getElementById("socialIcons");
+    document.getElementById("userTitle").textContent = `${currentUser.name}'s Linked Accounts`;
 
-    Object.entries(accounts).forEach(([platform, url]) => {
-      if (url && url.trim() !== "") {
-        const link = document.createElement("a");
-        link.href = platform === "whatsapp" ? `https://wa.me/${url.replace(/\D/g, "")}` : url;
-        link.target = "_blank";
-        link.className = "icon";
+    const linksContainer = document.getElementById("linksContainer");
 
-        const img = document.createElement("img");
-        img.src = icons[platform] || "";
-        img.alt = platform;
+    const platforms = [
+      { name: "Facebook", key: "facebook" },
+      { name: "Twitter", key: "twitter" },
+      { name: "Instagram", key: "instagram" },
+      { name: "LinkedIn", key: "linkedin" },
+      { name: "GitHub", key: "github" },
+      { name: "YouTube", key: "youtube" }
+    ];
 
-        link.appendChild(img);
-        iconContainer.appendChild(link);
+    platforms.forEach(platform => {
+      const url = currentUser[platform.key];
+      if (url) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.target = "_blank";
+        a.textContent = platform.name;
+        linksContainer.appendChild(a);
       }
     });
-
-    function generateQRCode() {
-      window.location.href = "qrcode.html"; // Next step
-    }
   </script>
 </body>
 </html>
