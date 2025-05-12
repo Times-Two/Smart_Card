@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Social Card - Link Accounts</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e3f2fd;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+    }
+    label {
+      margin-top: 10px;
+      display: block;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    input[readonly] {
+      background-color: #f5f5f5;
+    }
+    .hint {
+      font-size: 12px;
+      color: #888;
+      margin-top: -5px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #1565c0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="welcomeText">Welcome!</h2>
+
+    <form id="linkForm">
+      <label>Your Name:</label>
+      <input type="text" id="name" readonly />
+
+      <label>Your Contact/Email:</label>
+      <input type="email" id="email" readonly />
+
+      <p><strong>Link your accounts below:</strong></p>
+
+      <label for="youtube">YouTube:</label>
+      <input type="url" id="youtube" placeholder="https://youtube.com/yourprofile" onfocus="showHint('youtubeHint')" onblur="hideHint('youtubeHint')" />
+      <div class="hint" id="youtubeHint">You can copy from your account</div>
+
+      <label for="facebook">Facebook:</label>
+      <input type="url" id="facebook" placeholder="https://facebook.com/yourprofile" onfocus="showHint('facebookHint')" onblur="hideHint('facebookHint')" />
+      <div class="hint" id="facebookHint">You can copy from your account</div>
+
+      <label for="instagram">Instagram:</label>
+      <input type="url" id="instagram" placeholder="https://instagram.com/yourprofile" onfocus="showHint('instagramHint')" onblur="hideHint('instagramHint')" />
+      <div class="hint" id="instagramHint">You can copy from your account</div>
+
+      <label for="twitter">X (Twitter):</label>
+      <input type="url" id="twitter" placeholder="https://x.com/yourprofile" onfocus="showHint('twitterHint')" onblur="hideHint('twitterHint')" />
+      <div class="hint" id="twitterHint">You can copy from your account</div>
+
+      <label for="tiktok">TikTok:</label>
+      <input type="url" id="tiktok" placeholder="https://tiktok.com/@yourprofile" onfocus="showHint('tiktokHint')" onblur="hideHint('tiktokHint')" />
+      <div class="hint" id="tiktokHint">You can copy from your account</div>
+
+      <label for="linkedin">LinkedIn:</label>
+      <input type="url" id="linkedin" placeholder="https://linkedin.com/in/yourprofile" onfocus="showHint('linkedinHint')" onblur="hideHint('linkedinHint')" />
+      <div class="hint" id="linkedinHint">You can copy from your account</div>
+
+      <label for="whatsapp">WhatsApp Number:</label>
+      <input type="tel" id="whatsapp" placeholder="+1234567890" onfocus="showHint('whatsappHint')" onblur="hideHint('whatsappHint')" />
+      <div class="hint" id="whatsappHint">You can copy from your account</div>
+
+      <button type="submit">Done</button>
+    </form>
+  </div>
+
+  <script>
+    // Load user info from localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      window.location.href = "index.html"; // Redirect to login page if no user
+    } else {
+      document.getElementById("welcomeText").innerText = `Welcome, ${user.name}!`;
+      document.getElementById("name").value = user.name;
+      document.getElementById("email").value = user.email;
+    }
+
+    // Save linked accounts to localStorage
+    document.getElementById("linkForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const accounts = {
+        youtube: document.getElementById("youtube").value,
+        facebook: document.getElementById("facebook").value,
+        instagram: document.getElementById("instagram").value,
+        twitter: document.getElementById("twitter").value,
+        tiktok: document.getElementById("tiktok").value,
+        linkedin: document.getElementById("linkedin").value,
+        whatsapp: document.getElementById("whatsapp").value
+      };
+
+      // Save the accounts in localStorage
+      localStorage.setItem("accounts", JSON.stringify(accounts));
+
+      // Redirect to the next page
+      window.location.href = "linked.html";
+    });
+
+    // Hint functions for inputs
+    function showHint(id) {
+      document.getElementById(id).style.display = "block";
+    }
+
+    function hideHint(id) {
+      document.getElementById(id).style.display = "none";
+    }
+  </script>
+</body>
+</html>

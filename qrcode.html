@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code - Smart Card</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #ede7f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .qr-container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 {
+      color: #4527a0;
+    }
+    p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      background: #4527a0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #311b92;
+    }
+    #cardCanvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="qr-container" id="cardArea">
+    <h2 id="cardTitle">Your Smart Card</h2>
+    <img id="qrImage" src="" alt="QR Code" />
+    <p>Scan to view all linked accounts</p>
+  </div>
+
+  <button onclick="downloadCard()">Download Card</button>
+  <button onclick="goBack()">Back to Dashboard</button>
+
+  <canvas id="cardCanvas" width="400" height="500"></canvas>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user")) || { name: "User" };
+    const userName = user.name || "User";
+    document.getElementById("cardTitle").textContent = `${userName}'s Smart Card`;
+
+    const qrLink = window.location.origin + "/index.html";
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrLink)}&size=250x250`;
+    const qrImage = document.getElementById("qrImage");
+    qrImage.src = qrImageUrl;
+
+    function goBack() {
+      window.location.href = "linked.html";
+    }
+
+    function downloadCard() {
+      const canvas = document.getElementById("cardCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const cardWidth = canvas.width;
+      const cardHeight = canvas.height;
+
+      // Background
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, cardWidth, cardHeight);
+
+      // Title
+      ctx.fillStyle = "#4527a0";
+      ctx.font = "24px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`${userName}'s Smart Card`, cardWidth / 2, 50);
+
+      // Text below
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#555";
+      ctx.fillText("Scan to view all linked accounts", cardWidth / 2, 80);
+
+      // Load QR code and draw to canvas
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = qrImageUrl;
+      img.onload = () => {
+        ctx.drawImage(img, (cardWidth - 250) / 2, 100, 250, 250);
+
+        const link = document.createElement("a");
+        link.download = "smart_card.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      };
+    }
+  </script>
+</body>
+</html>
