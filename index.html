@@ -55,7 +55,7 @@
   <div class="container">
     <h1>Welcome to Smart Social Card</h1>
     <p>Link all your social media accounts into one smart ID. Share just one QR code!</p>
-
+    
     <form id="signupForm">
       <input type="text" id="name" placeholder="Enter your name" required />
       <input type="email" id="email" placeholder="Enter your email or contact" required />
@@ -72,9 +72,7 @@
       const password = document.getElementById("password").value;
 
       // Save to localStorage
-      const user = { name, email, password };
-      localStorage.setItem("user_" + email, JSON.stringify(user)); // Save uniquely
-      localStorage.setItem("user", JSON.stringify(user)); // Save current session
+      localStorage.setItem("user", JSON.stringify({ name, email, password }));
       window.location.href = "dashboard.html"; // Redirect to dashboard
     });
   </script>
