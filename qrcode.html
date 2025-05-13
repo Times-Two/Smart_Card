@@ -72,8 +72,8 @@
     const userName = user.name || "User";
     document.getElementById("cardTitle").textContent = `${userName}'s Smart Card`;
 
-    // Generate QR code data URL - using full URL for better compatibility
-    const qrLink = window.location.origin + "/index.html";
+    // ✅ Generate QR code linking to dashboard (linked.html)
+    const qrLink = window.location.origin + "/linked.html";
 
     // Generate QR code using QRious library
     const qrSize = 250;
@@ -88,7 +88,7 @@
     });
 
     function goBack() {
-      const qrLink = "https://times-two.github.io/linked.html";
+      window.location.href = "linked.html";
     }
 
     function downloadCard() {
